@@ -1,30 +1,25 @@
-const gameEngine = require('script.js');
-
+import { GameEngine } from './game-engine.js';
+import { GameObject } from './GameObject.js';
 // Create a new game engine
-
+const gameEngine = new GameEngine();
 // Initialize and start the game engine
 gameEngine.init(480, 270);
 gameEngine.start();
 
 // Create a new game object
-var myGamePiece = gameEngine.createGameObject(30, 30, "red", 10, 120);
-
-// Add keyboard controls to the game object
-window.addEventListener("keydown", function(e) {
-  if (e.keyCode == 37) {
-    myGamePiece.speedX = -1;
-  } else if (e.keyCode == 39) {
-    myGamePiece.speedX = 1;
-  } else if (e.keyCode == 38) {
-    myGamePiece.speedY = -1;
-  } else if (e.keyCode == 40) {
-    myGamePiece.speedY = 1;
-  }
-});
-window.addEventListener("keyup", function(e) {
-  if (e.keyCode == 37 || e.keyCode == 39) {
-    myGamePiece.speedX = 0;
-  } else if (e.keyCode == 38 || e.keyCode == 40) {
-    myGamePiece.speedY = 0;
-  }
-});
+var player = new GameObject(30, 30, 10, 120, "red", "text");
+gameEngine.addObject(player);
+gameEngine.update = function(){
+  if (gameEngine.pressedKey("w")){
+    player.move(0,-1);
+    }
+  if (gameEngine.pressedKey("s")){
+      player.move(0,1);
+      }
+  if (gameEngine.pressedKey("a")){
+        player.move(-1,0);
+        }
+  if (gameEngine.pressedKey("d")){
+          player.move(1,0);
+          }
+}
