@@ -1,80 +1,78 @@
-module.export = function GameEngine() {
-  var self = this;
+export class GameEngine {
+  constructor() {
+    this.objects = [];
+    this.objects = [];
+    this.current_key = null;
+    // Canvas element and context
+    this.canvas = document.createElement("canvas");
+    this.context = this.canvas.getContext("2d");
 
-  // Canvas element and context
-  this.canvas = document.createElement("canvas");
-  this.context = this.canvas.getContext("2d");
-
-  // Game objects and settings
-  this.objects = [];
-  this.interval = null;
-  this.keys = {};
+    // Game objects and settings
+    this.interval = null;
+  }
 
   // Initialize the game engine
-  this.init = function(width, height) {
-    self.canvas.width = width;
-    self.canvas.height = height;
-    document.body.insertBefore(self.canvas, document.body.childNodes[0]);
-    window.addEventListener("keydown", function(e) {
-      self.keys[e.keyCode] = true;
+  init(width, height) {
+    this.canvas.width = width;
+    this.canvas.height = height;
+    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+
+    window.addEventListener("keydown", (e) => {
+      this.current_key = e.key;
     });
-    window.addEventListener("keyup", function(e) {
-      self.keys[e.keyCode] = false;
+    window.addEventListener("keyup", (e) => {
+      this.current_key = null;
     });
-  };
+  }
 
   // Start the game engine
-  this.start = function() {
-    self.interval = setInterval(function() {
-      self.update();
-      self.draw();
+  start() {
+    this.interval = setInterval(() => {
+      this.sprite_update();
+      this.draw();
+      this.update();
     }, 20);
-  };
+  }
 
   // Stop the game engine
-  this.stop = function() {
-    clearInterval(self.interval);
-  };
+  stop() {
+    clearInterval(this.interval);
+  }
 
-  // Update the game state
-  this.update = function() {
-    for (var i = 0; i < self.objects.length; i++) {
-      if (self.objects[i].update) {
-        self.objects[i].update();
+  update() {
+    // its and empty function, what the user can fill up
+  }
+
+  // sprite_update the game state
+  sprite_update() {
+    for (let i = 0; i < this.objects.length; i++) {
+      if (this.objects[i].sprite_update) {
+        this.objects[i].sprite_update();
       }
     }
-  };
+  }
 
   // Draw the game objects
-  this.draw = function() {
-    self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
-    for (var i = 0; i < self.objects.length; i++) {
-      if (self.objects[i].draw) {
-        self.objects[i].draw();
+  draw() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (let i = 0; i < this.objects.length; i++) {
+      if (this.objects[i].draw) {
+        this.objects[i].draw();
       }
     }
-  };
+  }
+
+  getKey() {
+    return this.current_key;
+  }
+
+  pressedKey(key) {
+    return key === this.current_key;
+  }
+
+  addObject(obj) {
+    this.objects.push(obj);
+  }
 
   // Create a new game object
-  this.createGameObject = function(width, height, color, x, y) {
-    var obj = {
-      width: width,
-      height: height,
-      color: color,
-      x: x,
-      y: y,
-      speedX: 0,
-      speedY: 0,
-      update: function() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-      },
-      draw: function() {
-        self.context.fillStyle = this.color;
-        self.context.fillRect(this.x, this.y, this.width, this.height);
-      }
-    };
-    self.objects.push(obj);
-    return obj;
-  };
 }
